@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JWT Token Test</title>
+</head>
+<body>
+    <button onclick="testWithToken()">测试带令牌请求</button>
+
+    <script>        // 先登录获取令牌
+        async function login() {
+            const response = await fetch('http://localhost:8080/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: 'admin',
+                    password: '123456'
+                })
+            });
+            const result = await response.json();
+            return result.data.token;
+        }
+
+        // 使用令牌访问其他接口
+        async function testWithToken() {
+            const token = await login();
+            const response = await fetch('http://localhost:8080/employees?page=1&pageSize=10', {
+                headers: {
+                    'token': token
+                }
+            });
+            const data = await response.json();
+            console.log(data);
+        }
+    </script>
+</body>
+</html>

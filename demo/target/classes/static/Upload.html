@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传表单</title>
+    <style>
+        /* 简单美化，让页面更好看 */
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        .form-item {
+            margin: 15px 0;
+        }
+        input {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background: #409eff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 10px;
+        }
+        input[type="submit"]:hover {
+            background: #297eff;
+        }
+    </style>
+</head>
+<body>
+<h2>用户信息 + 头像上传</h2>
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <div class="form-item">
+        姓名：<input type="text" name="name" placeholder="请输入姓名">
+    </div>
+    <div class="form-item">
+        年龄：<input type="text" name="age" placeholder="请输入年龄">
+    </div>
+    <div class="form-item">
+        头像：<input type="file" name="file" accept="image/*">
+    </div>
+    <div class="form-item">
+        <input type="submit" value="提交上传">
+    </div>
+</form>
+</body>
+</html>
