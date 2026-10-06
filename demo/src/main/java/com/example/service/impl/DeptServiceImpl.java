@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.example.Logoperation;
 import com.example.mapper.DeptMapper;
 import com.example.pojo.Dept;
 import com.example.service.DeptService;
@@ -14,16 +15,19 @@ public class DeptServiceImpl implements DeptService {
 
     @Autowired
     private DeptMapper deptMapper;
+
     @Override
     public List<Dept> findAll() {
         return deptMapper.findAll();
     }
 
+    @Logoperation
     @Override
     public void delete(Integer id) {
         deptMapper.delete(id);
     }
 
+    @Logoperation
     @Override
     public void add(Dept dept) {
         dept.setCreateTime(LocalDateTime.now());
@@ -36,6 +40,7 @@ public class DeptServiceImpl implements DeptService {
         return deptMapper.findById(id);
     }
 
+    @Logoperation
     @Override
     public void update(Dept dept) {
         dept.setUpdateTime(LocalDateTime.now());

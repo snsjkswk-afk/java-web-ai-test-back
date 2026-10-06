@@ -29,6 +29,8 @@ public interface EmpMapper {
 
     void update(Emp emp);
 
+    void deleteById(Integer id);
+
     @MapKey("name")
     List<Map<String, Object>> getJobData();
 

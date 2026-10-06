@@ -10,6 +10,7 @@
         values (#{name}, #{no}, #{gender}, #{phone}, #{idCard}, #{isCollege}, #{address}, #{degree}, #{graduationDate},
                 #{clazzId}, #{violationCount}, #{violationScore})
     </insert>
+
     <update id="update">
         update student
         <set>
@@ -57,6 +58,43 @@
             </where>
         </set>
     </update>
+
+
+
+    <delete id="deleteBach">
+        delete from student where id in
+        <foreach item="id" collection="list" separator="," close=")" open="(">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteById">
+        delete from student where id = #{id}
+    </delete>
+
+    <select id="countById" resultType="java.lang.Integer">
+        select count(*) from student where id = #{id}
+    </select>
+
+    <select id="ps" resultType="com.example.pojo.Student">
+        select * from student
+        <where>
+            <if test="name != null">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="degree != null and degree != ''">
+                and degree = #{degree}
+            </if>
+            <if test="clazzId != null">
+                and clazz_id = #{clazzId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" resultType="com.example.pojo.Student">
+        select * from student where id = #{id}
+    </select>
+
     <update id="disciplinaryHandling">
         update student
         set
@@ -66,33 +104,30 @@
         where id = #{id}
     </update>
 
-    <delete id="deleteBach">
-        delete from student where id in
-        <foreach item="id" collection="list" separator="," close=")" open="(">
-            #{id}
-        </foreach>
-        />
-    </delete>
-    <select id="countById" resultType="java.lang.Integer">
-        select count(*) from student where id = #{id}
-    </select>
-    <select id="ps" resultType="com.example.pojo.Student">
-        select * from student
-        <where>
-            <if test="name != null">
-                and name like concat('%',#{name},'%')
-            </if>
-            <if test="degree != null">
-                and degree = #{degree}
-            </if>
-            <if test="clazzId != null">
-                and clazz_id = #{clazzId}
-            </if>
-        </where>
-    </select>
-    <select id="getById" resultType="com.example.pojo.Student">
-        select * from student where id = #{id}
-    </select>
+    <update id="reduceViolation">
+        update student
+        set
+            violation_count = GREATEST(IFNULL(violation_count, 0) - #{violation}, 0),
+            violation_score = GREATEST(IFNULL(violation_score, 0) - #{score}, 0),
+            update_time = NOW()
+        where id = #{id}
+    </update>
 
+    <update id="revokeViolation">
+        update student
+        set
+            violation_count = 0,
+            violation_score = 0,
+            update_time = NOW()
+        where id = #{id}
+    </update>
 
+    <update id="updateViolation">
+        update student
+        set
+            violation_count = #{count},
+            violation_score = #{score},
+            update_time = NOW()
+        where id = #{id}
+    </update>
 </mapper>

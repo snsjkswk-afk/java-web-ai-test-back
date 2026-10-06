@@ -22,6 +22,9 @@
         </set>
         where id = #{id}
     </update>
+    <delete id="deleteById">
+        delete from emp where id = #{id}
+    </delete>
 
     <!-- 直接引用外部 SQL 片段 -->
 
@@ -32,11 +35,11 @@
                  e.name like concat('%',#{name},'%')
             </if>
             <if test="gender != null">
-                 e.gender = #{gender}
+                and e.gender = #{gender}
             </if>
-        <if test="begin != null and end != null ">
-             e.entry_date between #{begin} and #{end}
-        </if>
+            <if test="begin != null and end != null ">
+                 and e.entry_date between #{begin} and #{end}
+            </if>
 
         </where>
     </select>

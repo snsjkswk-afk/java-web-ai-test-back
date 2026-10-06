@@ -7,7 +7,7 @@
 <mapper namespace="com.example.mapper.ClassMapper">
     <insert id="add">
         insert into clazz(name,room,begin_date,end_date,master_id,subject)
-        values(#{name},#{room},#{begin},#{end},#{masterId},#{subject})
+        values(#{name},#{room},#{beginDate},#{endDate},#{masterId},#{subject})
     </insert>
     <update id="update">
         update clazz

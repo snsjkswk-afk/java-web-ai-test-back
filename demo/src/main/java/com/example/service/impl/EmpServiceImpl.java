@@ -50,14 +50,13 @@ public class EmpServiceImpl implements EmpService {
             emp.setCreateTime(LocalDateTime.now());
             emp.setEntryDate(LocalDate.now());
             empMapper.save(emp);
-            //批量添加员工经历
             List<EmpExpr> exprList = emp.getExprList();
             if(!CollectionUtils.isEmpty(exprList)) {
                 exprList.forEach(expr -> {
                     expr.setEmpId(emp.getId());
                 });
+                empExprMapper.insertBatch(exprList);
             }
-            empExprMapper.insertBatch(exprList);
         }finally {
             EmpLog empLog = new EmpLog();
             empLog.setOperateTime(LocalDateTime.now());
@@ -65,26 +64,27 @@ public class EmpServiceImpl implements EmpService {
             empLogService.insertLog(empLog);
         }
     }
-    @Logoperation
     @Override
     public Emp getById(Integer id) {
         Emp emp = empMapper.getById(id);
         return emp;
     }
     @Logoperation
+    @Override
+    public void deleteById(Integer id) {
+        empMapper.deleteById(id);
+    }
+    @Logoperation
     @Transactional(rollbackFor = Exception.class )
     @Override
     public void update(Emp emp) {
         emp.setUpdateTime(LocalDateTime.now());
-        //更新经历
         empMapper.update(emp);
-        //先删除原来员工的经历
         empExprMapper.deleteByEmpId(Arrays.asList(emp.getId()));
-        //再批量添加员工经历
         Integer id = emp.getId();
         List<EmpExpr> exprList = emp.getExprList();
         if(!CollectionUtils.isEmpty(exprList)) {
-            exprList.forEach(expr -> {expr.setEmpId( id);});
+            exprList.forEach(expr -> {expr.setEmpId(id);});
             empExprMapper.insertBatch(exprList);
         }
     }
@@ -104,6 +104,8 @@ public class EmpServiceImpl implements EmpService {
                 login.getUsername(),login.getName(),token);
         return loginInfo;
     }
+
+
 
 
 

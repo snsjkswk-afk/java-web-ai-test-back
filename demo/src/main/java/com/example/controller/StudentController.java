@@ -34,6 +34,12 @@ public class StudentController {
         studentService.deleteBach(result);
         return Result.success();
     }
+    public Result deleteById(@PathVariable Integer id) {
+        log.info("删除学生，ID: {}", id);
+        studentService.deleteById(id);
+        return Result.success();
+    }
+
     @PostMapping
     public Result add(@RequestBody Student student) {
         log.info("添加学生信息");
@@ -55,12 +61,37 @@ public class StudentController {
         studentService.update(student);
         return Result.success();
     }
-    @PutMapping("/{violation}/{id}/{score}")
-    public Result disciplinaryHandling(@PathVariable Integer violation,
-                                       @PathVariable Integer id,
-                                       @PathVariable Short score) {
-        log.info("处理违纪信息");
-        studentService.disciplinaryHandling(violation,id,score);
+    @PutMapping("/disciplinary/{id}")
+    public Result disciplinaryHandling(@PathVariable Integer id,
+                                       @RequestBody StudentViolationRecord record) {
+        log.info("处理违纪信息，学生ID: {}, 类型: {}", id, record.getViolationType());
+        studentService.disciplinaryHandling(id, record);
         return Result.success();
+    }
+    @PutMapping("/reduce/{id}/{count}/{score}")
+    public Result reduceViolation(@PathVariable Integer id,
+                                  @PathVariable Integer count,
+                                  @PathVariable Integer score) {
+        log.info("减少违纪，学生ID: {}, 分值: {}", id, score);
+        if (count<0) {
+            return Result.error("没有该违纪,无法删除");
+        }
+        studentService.reduceViolation(id, score);
+        return Result.success();
+    }
+    @PutMapping("/revoke/{id}")
+    public Result revokeViolation(@PathVariable Integer id) {
+        log.info("撤销违纪，学生ID: {}", id);
+        studentService.revokeViolation(id);
+        return Result.success();
+    }
+    @GetMapping("/{id}/violations")
+    public Result getViolationInfo(@PathVariable Integer id) {
+        log.info("查看学生违纪信息，ID: {}", id);
+        List<StudentViolationRecord> student = studentService.getViolationInfo(id);
+        if (student == null) {
+            return Result.error("学生不存在");
+        }
+        return Result.success(student);
     }
 }

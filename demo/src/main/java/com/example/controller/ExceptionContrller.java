@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionContrller {
 
     @ExceptionHandler
+    public Result error(RuntimeException e) {
+        log.error("业务异常: {}", e.getMessage());
+        return Result.error(e.getMessage());
+    }
+
+    @ExceptionHandler
     public Result error(Exception e) {
         log.error("服务器发生异常: {}", e.getMessage());
         return Result.error("服务器发生异常");
@@ -19,11 +25,10 @@ public class ExceptionContrller {
     @ExceptionHandler
     public Result error(DuplicateKeyException e) {
         log.info("数据库字段重复");
-        int index = e.getMessage().lastIndexOf("for key '") + 9; // 跳过 "for key '"
+        int index = e.getMessage().lastIndexOf("for key '") + 9;
         String keyName = e.getMessage().substring(index);
-        keyName = keyName.replace("'", ""); // 去掉单引号
+        keyName = keyName.replace("'", "");
         return Result.error("字段重复: " + keyName);
-        // 结果: "字段重复: username"
     }
     @ExceptionHandler
     public Result error(Throwable e) {

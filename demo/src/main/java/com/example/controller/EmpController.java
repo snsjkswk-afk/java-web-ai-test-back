@@ -48,4 +48,10 @@ public class EmpController {
         empService.update(emp);
         return Result.success();
     }
+    @DeleteMapping("/{id}")
+    public Result deleteById(@PathVariable Integer id) {
+        log.info("删除员工信息");
+        empService.deleteById(id);
+        return Result.success();
+    }
 }

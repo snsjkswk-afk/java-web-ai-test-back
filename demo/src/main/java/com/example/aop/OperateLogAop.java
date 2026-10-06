@@ -39,7 +39,7 @@ public class OperateLogAop {
         operateLog.setClassName(joinPoint.getTarget().getClass().getName());
         operateLog.setMethodName(joinPoint.getSignature().getName());
         operateLog.setMethodParams(Arrays.toString(joinPoint.getArgs()));
-        operateLog.setReturnValue(result.toString());
+        operateLog.setReturnValue(result != null ? result.toString() : "void");
         operateLog.setCostTime(costTime);
         operateLogMapper.insert(operateLog);
         return result;

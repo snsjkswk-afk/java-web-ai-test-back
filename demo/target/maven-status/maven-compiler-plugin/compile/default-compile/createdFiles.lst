@@ -18,6 +18,7 @@ com\example\controller\ExceptionContrller.class
 com\example\controller\ReportController.class
 com\example\service\impl\DeptServiceImpl.class
 com\example\service\EmpLogService.class
+com\example\mapper\StudentViolationRecordMapper.class
 com\example\service\ReportService.class
 com\example\controller\StudentController.class
 com\example\mapper\OperateLogMapper.class

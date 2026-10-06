@@ -2,6 +2,7 @@ com\example\pojo\Clazz.class
 com\example\pojo\PageResult.class
 com\example\Main.class
 com\example\pojo\StudentQueryParam.class
+com\example\pojo\StudentViolationRecord.class
 com\example\pojo\OperateLog.class
 com\example\pojo\Dept.class
 com\example\pojo\JobOption.class

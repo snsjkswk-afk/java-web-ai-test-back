@@ -31,7 +31,6 @@ public class ClassServiceImpl implements ClassService {
         return new PageResult<>(list.getTotal(),list.getResult());
     }
 
-    @Logoperation
     @Override
     public void findAll() {
         classMapper.findAll();
@@ -45,19 +44,21 @@ public class ClassServiceImpl implements ClassService {
         classMapper.add(clazz);
     }
 
-    @Logoperation
     @Override
     public Clazz getById(Integer id) {
         Clazz clazz = classMapper.getById(id);
         return clazz;
     }
 
+    @Logoperation
     @Override
     public Clazz update(Clazz clazz) {
         Clazz clazz1 = classMapper.update(clazz);
         clazz1.setUpdateTime(LocalDateTime.now());
         return clazz1;
     }
+
+    @Logoperation
     @Transactional
     @Override
     public Result delete(Integer id) {
