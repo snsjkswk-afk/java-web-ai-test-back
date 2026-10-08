@@ -7,6 +7,6 @@
 
 
     <select id="pageSelect" resultType="com.example.pojo.EmpLog">
-        select * from emp_log
+        select * from emp_log order by operate_time desc
     </select>
 </mapper>

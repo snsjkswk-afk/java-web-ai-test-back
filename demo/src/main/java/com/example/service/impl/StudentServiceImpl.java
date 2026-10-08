@@ -18,6 +18,10 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,10 +47,16 @@ public class StudentServiceImpl implements StudentService {
         if(CollectionUtils.isEmpty(ids)) {
            log.error("删除ID不能为空");
         }
+        // 删除前先查询学生姓名，用于日志记录
+        List<String> names = ids.stream()
+                .map(studentMapper::getById)
+                .filter(Objects::nonNull)
+                .map(Student::getName)
+                .collect(Collectors.toList());
         studentMapper.deleteBach(ids);
         EmpLog empLog = new EmpLog();
         empLog.setOperateTime(LocalDateTime.now());
-        empLog.setInfo("批量删除学生, IDs: " + ids);
+        empLog.setInfo("批量删除学生: " + names);
         empLogService.insertLog(empLog);
     }
 
@@ -55,10 +65,12 @@ public class StudentServiceImpl implements StudentService {
     public void deleteById(Integer id) {
         if (id == null)
             throw new RuntimeException("删除ID不能为空");
+        // 删除前先查询学生姓名，用于日志记录
+        Student student = studentMapper.getById(id);
         studentMapper.deleteById(id);
         EmpLog empLog = new EmpLog();
         empLog.setOperateTime(LocalDateTime.now());
-        empLog.setInfo("删除学生, ID: " + id);
+        empLog.setInfo("删除学生: " + (student != null ? student.getName() : id));
         empLogService.insertLog(empLog);
     }
 

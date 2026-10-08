@@ -72,7 +72,13 @@ public class EmpServiceImpl implements EmpService {
     @Logoperation
     @Override
     public void deleteById(Integer id) {
+        // 删除前先查询员工姓名，用于日志记录
+        Emp emp = empMapper.getById(id);
         empMapper.deleteById(id);
+        EmpLog empLog = new EmpLog();
+        empLog.setOperateTime(LocalDateTime.now());
+        empLog.setInfo("删除员工: " + (emp != null ? emp.getName() : id));
+        empLogService.insertLog(empLog);
     }
     @Logoperation
     @Transactional(rollbackFor = Exception.class )

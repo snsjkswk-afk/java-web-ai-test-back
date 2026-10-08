@@ -3,11 +3,9 @@ package com.example.service.impl;
 import com.example.Logoperation;
 import com.example.mapper.ClassMapper;
 import com.example.mapper.StudentMapper;
-import com.example.pojo.ClassQueryParam;
-import com.example.pojo.Clazz;
-import com.example.pojo.PageResult;
-import com.example.pojo.Result;
+import com.example.pojo.*;
 import com.example.service.ClassService;
+import com.example.service.EmpLogService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,8 @@ import java.time.LocalDateTime;
 
 @Service
 public class ClassServiceImpl implements ClassService {
+    @Autowired
+    public EmpLogService empLogService;
 
     @Autowired
     public ClassMapper classMapper;
@@ -39,9 +39,13 @@ public class ClassServiceImpl implements ClassService {
     @Logoperation
     @Override
     public void add(Clazz clazz) {
+        EmpLog empLog = new EmpLog();
+        empLog.setOperateTime(LocalDateTime.now());
+        empLog.setInfo("新增班级: " + clazz.getName());
         clazz.setBeginDate(LocalDate.now());
         clazz.setEndDate(LocalDate.now());
         classMapper.add(clazz);
+        empLogService.insertLog(empLog);
     }
 
     @Override
@@ -62,9 +66,14 @@ public class ClassServiceImpl implements ClassService {
     @Transactional
     @Override
     public Result delete(Integer id) {
+        Clazz clazz = classMapper.getById(id);
         int count = studentMapper.countById( id);
         if (count > 0) {
+            EmpLog empLog = new EmpLog();
+            empLog.setOperateTime(LocalDateTime.now());
+            empLog.setInfo("删除班级: " + clazz.getName());
             classMapper.delete(id);
+            empLogService.insertLog(empLog);
         }else {
             return Result.error("该班级下有学生,不能直接删除");
         }
