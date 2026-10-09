@@ -103,11 +103,13 @@ public class EmpServiceImpl implements EmpService {
         if(login== null) {
             return null;
         }
-        Integer id = login.getId();
-        String usename = login.getUsername();
-        String token = Jutis.GnerateJwt(id, usename);
-        LoginInfo loginInfo = new LoginInfo(login.getId(),
-                login.getUsername(),login.getName(),token);
+        String token = Jutis.GnerateJwt(login.getId(), login.getUsername());
+        LoginInfo loginInfo = new LoginInfo();
+        loginInfo.setId(login.getId());
+        loginInfo.setUsername(login.getUsername());
+        loginInfo.setName(login.getName());
+        loginInfo.setImage(login.getImage());
+        loginInfo.setToken(token);
         return loginInfo;
     }
 

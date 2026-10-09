@@ -37,6 +37,9 @@
             <if test="gender != null">
                 and e.gender = #{gender}
             </if>
+            <if test="job != null">
+                and e.job = #{job}
+            </if>
             <if test="begin != null and end != null ">
                  and e.entry_date between #{begin} and #{end}
             </if>
@@ -65,23 +68,29 @@
             from emp group by gender
     </select>
     <select id="getStudentDegreeData" resultType="java.util.Map">
-        select (case degree when 1 then '本科'
-             when 2 then '硕士'
-             when 3 then '博士'
-             else '其他' end) degree,
-             count(*) count
-             from student group by degree
+        select case s.degree
+                   when 1 then '初中'
+                   when 2 then '高中'
+                   when 3 then '大专'
+                   when 4 then '本科'
+                   when 5 then '硕士'
+                   when 6 then '博士'
+                   else '未知'
+               end as degree,
+               count(s.id) as count
+        from student s
+        group by s.degree
+        order by s.degree
     </select>
     <select id="getStudentCountData" resultType="java.util.Map">
-        select (case clazz_id when 1 then '一班'
-                              when 2 then '二班'
-                              when 3 then '三班'
-                              when 4 then '四班'
-                              when 5 then '五班'
-                              else '其他' end) clazz,
-                              count(*) count
-                              from student group by clazz_id;
+        select ifnull(c.name, '未分班') as clazz,
+               count(s.id) as count
+        from student s
+        left join clazz c on s.clazz_id = c.id
+        group by s.clazz_id, c.name
+        order by s.clazz_id
     </select>
+
     <select id="login" resultType="com.example.pojo.Emp">
         select * from emp where username = #{username} and password = #{password}
     </select>

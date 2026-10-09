@@ -77,8 +77,15 @@ public class StudentServiceImpl implements StudentService {
     @Logoperation
     @Override
     public void add(Student student) {
-        student.setCreateTime(LocalDateTime.now());
-        student.setUpdateTime(LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        student.setCreateTime(now);
+        student.setUpdateTime(now);
+        if (student.getViolationCount() == null) {
+            student.setViolationCount((short) 0);
+        }
+        if (student.getViolationScore() == null) {
+            student.setViolationScore((short) 0);
+        }
         studentMapper.add(student);
         EmpLog empLog = new EmpLog();
         empLog.setOperateTime(LocalDateTime.now());
@@ -146,6 +153,10 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentMapper.getById(id);
         if (student == null) {
             throw new RuntimeException("学生不存在，ID: " + id);
+        }
+        if ((student.getViolationCount() == null || student.getViolationCount() == 0)
+                && (student.getViolationScore() == null || student.getViolationScore() == 0)) {
+            throw new RuntimeException("该学生没有处分，无法撤销");
         }
         // 删除所有违纪记录
         violationRecordMapper.deleteByStudentId(id);

@@ -9,6 +9,7 @@
         insert into clazz(name,room,begin_date,end_date,master_id,subject)
         values(#{name},#{room},#{beginDate},#{endDate},#{masterId},#{subject})
     </insert>
+
     <update id="update">
         update clazz
         <set>
@@ -30,32 +31,46 @@
             <if test="subject != null">
                 subject = #{subject},
             </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
         </set>
+        where id = #{id}
     </update>
+
     <delete id="delete">
         delete from clazz where id = #{id}
     </delete>
 
     <!-- 直接引用外部 SQL 片段 -->
 
-
+<!-- &lt;是less Than的意思，&gt;是greater Than的意思 -->
     <select id="ps" resultType="com.example.pojo.Clazz">
-        select * from clazz
+        select c.*, e.name as masterName,
+               case
+                   when curdate() &lt; c.begin_date then '未开班'
+                   when curdate() &gt; c.end_date then '已结课'
+                   else '在读'
+               end as status
+        from clazz c
+        left join emp e on c.master_id = e.id
         <where>
-            <if test="name != null">
-                and name like concat('%',#{name},'%')
+            <if test="name != null and name != ''">
+                and c.name like concat('%',#{name},'%')
             </if>
             <if test="begin != null">
-                and begin >= #{beginDate}
+                and c.begin_date &gt;= #{begin}
             </if>
-            <if test="end != null">   <!-- 这里修复了 -->
-                and end &lt;= #{endDate}
+            <if test="end != null">
+                and c.end_date &lt;= #{end}
             </if>
         </where>
     </select>
-    <select id="findAll">
+
+    <select id="findAll" resultType="com.example.pojo.Clazz">
         select * from clazz
     </select>
+
     <select id="getById" resultType="com.example.pojo.Clazz">
         select * from clazz where id = #{id}
     </select>

@@ -4,11 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.mapper.StudentMapper">
-    <insert id="add">
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
         insert into student (name, no, gender, phone, id_card, is_college, address, degree, graduation_date,
-                             clazz_id, violation_count, violation_score)
+                             clazz_id, violation_count, violation_score, create_time, update_time)
         values (#{name}, #{no}, #{gender}, #{phone}, #{idCard}, #{isCollege}, #{address}, #{degree}, #{graduationDate},
-                #{clazzId}, #{violationCount}, #{violationScore})
+                #{clazzId}, #{violationCount}, #{violationScore}, #{createTime}, #{updateTime})
     </insert>
 
     <update id="update">
@@ -50,13 +50,9 @@
             <if test="violationScore != null">
                 violation_score = #{violationScore},
             </if>
-            <if test="clazzName != null">
-                clazz_name = #{clazzName},
-            </if>
-            <where>
-                id = #{id}
-            </where>
+            update_time = now()
         </set>
+        where id = #{id}
     </update>
 
 
@@ -76,23 +72,32 @@
         select count(*) from student where id = #{id}
     </select>
 
+    <select id="countByClazzId" resultType="java.lang.Integer">
+        select count(*) from student where clazz_id = #{clazzId}
+    </select>
+
     <select id="ps" resultType="com.example.pojo.Student">
-        select * from student
+        select s.*, c.name as clazzName
+        from student s
+        left join clazz c on s.clazz_id = c.id
         <where>
-            <if test="name != null">
-                and name like concat('%',#{name},'%')
+            <if test="name != null and name != ''">
+                and s.name like concat('%',#{name},'%')
             </if>
             <if test="degree != null and degree != ''">
-                and degree = #{degree}
+                and s.degree = #{degree}
             </if>
             <if test="clazzId != null">
-                and clazz_id = #{clazzId}
+                and s.clazz_id = #{clazzId}
             </if>
         </where>
     </select>
 
     <select id="getById" resultType="com.example.pojo.Student">
-        select * from student where id = #{id}
+        select s.*, c.name as clazzName
+        from student s
+        left join clazz c on s.clazz_id = c.id
+        where s.id = #{id}
     </select>
 
     <update id="disciplinaryHandling">

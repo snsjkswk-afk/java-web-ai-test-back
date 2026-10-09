@@ -17,7 +17,7 @@ public interface ClassMapper {
 
     Clazz getById(Integer id);
 
-    Clazz update(Clazz clazz);
+    void update(Clazz clazz);
 
 
     void delete(Integer id);

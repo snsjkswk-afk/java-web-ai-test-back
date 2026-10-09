@@ -5,13 +5,16 @@ import com.example.pojo.StudentQueryParam;
 import com.example.pojo.StudentViolationRecord;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 import java.util.List;
 
 @Mapper
 public interface StudentMapper {
-    int countById(Integer id);
+    int countByClazzId(@Param("clazzId") Integer clazzId);
+
     Page<Student> ps(StudentQueryParam studentQueryParam);
 
 

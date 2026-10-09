@@ -57,9 +57,9 @@ public class ClassServiceImpl implements ClassService {
     @Logoperation
     @Override
     public Clazz update(Clazz clazz) {
-        Clazz clazz1 = classMapper.update(clazz);
-        clazz1.setUpdateTime(LocalDateTime.now());
-        return clazz1;
+        clazz.setUpdateTime(LocalDateTime.now());
+        classMapper.update(clazz);
+        return classMapper.getById(clazz.getId());
     }
 
     @Logoperation
@@ -67,16 +67,18 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public Result delete(Integer id) {
         Clazz clazz = classMapper.getById(id);
-        int count = studentMapper.countById( id);
-        if (count > 0) {
-            EmpLog empLog = new EmpLog();
-            empLog.setOperateTime(LocalDateTime.now());
-            empLog.setInfo("删除班级: " + clazz.getName());
-            classMapper.delete(id);
-            empLogService.insertLog(empLog);
-        }else {
-            return Result.error("该班级下有学生,不能直接删除");
+        if (clazz == null) {
+            return Result.error("班级不存在，ID: " + id);
         }
-        return null;
+        int count = studentMapper.countByClazzId(id);
+        if (count > 0) {
+            return Result.error("该班级下还有 " + count + " 名学生，请先转移或删除学生");
+        }
+        EmpLog empLog = new EmpLog();
+        empLog.setOperateTime(LocalDateTime.now());
+        empLog.setInfo("删除班级: " + clazz.getName());
+        classMapper.delete(id);
+        empLogService.insertLog(empLog);
+        return Result.success();
     }
 }
