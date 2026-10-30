@@ -2,6 +2,9 @@ spring:
   application:
     name: springboot-mybatis-quickstart
   datasource:
+#    url: jdbc:mysql://localhost:3306/employee_db
+#    username: employee_user
+#    password: CLtjEwbwKbNSGeTZ
     url: jdbc:mysql://localhost:3306/empp
     username: root
     password: 123456
@@ -15,6 +18,10 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
 
+#server:
+#  servlet:
+#    context-path: /api
+
 logging:
   level:
     org.springframework.jdbc.support.JdbcTransactionManager: debug
@@ -26,4 +33,6 @@ aliyun:
         endpoint: oss-cn-beijing.aliyuncs.com
         bucketName: java-web-snsjkswk
         region: cn-beijing
-
+        # 密钥不再硬编码，从环境变量读取，避免泄露到公开仓库
+        accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID:}
+        accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:}

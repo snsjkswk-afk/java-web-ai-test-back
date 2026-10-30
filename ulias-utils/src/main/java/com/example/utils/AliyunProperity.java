@@ -11,4 +11,6 @@ public class AliyunProperity {
     private String endpoint;
     private String bucketName;
     private String region;
+    private String accessKeyId;      // <--- 新增
+    private String accessKeySecret;
 }
