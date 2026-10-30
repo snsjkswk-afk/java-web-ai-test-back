@@ -58,6 +58,12 @@
             <if test="name != null and name != ''">
                 and c.name like concat('%',#{name},'%')
             </if>
+            <if test="masterName != null and masterName != ''">
+                and e.name like concat('%',#{masterName},'%')
+            </if>
+            <if test="subject != null">
+                and c.subject = #{subject}
+            </if>
             <if test="begin != null">
                 and c.begin_date &gt;= #{begin}
             </if>

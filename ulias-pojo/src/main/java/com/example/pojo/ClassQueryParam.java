@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ClassQueryParam {
     String name;
+    String masterName;
+    Integer subject;
     LocalDate begin;
     LocalDate end;
     Integer page;
