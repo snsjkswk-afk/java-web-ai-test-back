@@ -1,6 +1,7 @@
 spring:
   application:
     name: springboot-mybatis-quickstart
+  
   datasource:
 #    url: jdbc:mysql://localhost:3306/employee_db
 #    username: employee_user
@@ -34,5 +35,6 @@ aliyun:
         bucketName: java-web-snsjkswk
         region: cn-beijing
         # 密钥不再硬编码，从环境变量读取，避免泄露到公开仓库
-        accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID:}
-        accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:}
+        # 优先读 ALIYUN_OSS_ACCESS_KEY_ID，未配置时回退到 OSS_ACCESS_KEY_ID（本机已存在的变量名）
+        accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID:${OSS_ACCESS_KEY_ID:}}
+        accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:${OSS_ACCESS_KEY_SECRET:}}

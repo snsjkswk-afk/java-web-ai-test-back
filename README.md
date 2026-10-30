@@ -90,27 +90,43 @@ spring:
 
 ### 4. 配置 OSS 密钥（环境变量，不要写进配置文件）
 
-`application.yml` 中读取的是环境变量，仓库里没有真实密钥：
+`application.yml` 中读取的是环境变量，仓库里没有真实密钥。支持两个变量名，前者优先、后者为系统已有变量名的回退：
 
 ```yaml
 aliyun:
   oss:
-    accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID:}
-    accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:}
+    accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID:${OSS_ACCESS_KEY_ID:}}
+    accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:${OSS_ACCESS_KEY_SECRET:}}
 ```
 
-IDEA 中在 `Run/Debug Configurations → Environment variables` 填入：
+**方式一：系统环境变量（推荐，一次配置长期生效）**
+
+Windows「系统属性 → 环境变量」新建后**重启 IDEA**（已运行的进程读不到新变量）：
+
+```
+ALIYUN_OSS_ACCESS_KEY_ID=你的AccessKeyId
+ALIYUN_OSS_ACCESS_KEY_SECRET=你的AccessKeySecret
+```
+
+**方式二：只对本项目生效**
+
+IDEA `Run/Debug Configurations → Environment variables` 填入：
 
 ```
 ALIYUN_OSS_ACCESS_KEY_ID=你的AccessKeyId;ALIYUN_OSS_ACCESS_KEY_SECRET=你的AccessKeySecret
 ```
 
-命令行启动时：
+命令行启动：
 
 ```bash
 export ALIYUN_OSS_ACCESS_KEY_ID=xxx
 export ALIYUN_OSS_ACCESS_KEY_SECRET=yyy
 ```
+
+> 注意：项目根目录**不需要**放 `.env` 文件。Spring Boot 不会自动读取 `.env` / `.env.local`（那是 Vite、Next.js 的约定），密钥只能来自操作系统环境变量或启动参数。
+>
+> 凭证是否加载成功，看启动日志即可：
+> `OSS 配置加载成功：endpoint=...，bucket=...，accessKeyId=LTAI5t5x****`；若打印的是 `OSS 凭证为空`，说明变量名写错或 IDEA 未重启。
 
 > 不配置也能启动，仅 `/upload` 接口会失败，其余功能不受影响。
 
